@@ -22,3 +22,25 @@ The project covers the **full user lifecycle**:
 4. Profile retrieval and validation  
 5. Profile update  
 6. User deletion and verification  
+
+---
+
+## 💡 Highlights
+
+- Complete **End-to-End workflow** for a user  
+- Intelligent use of **dynamic test data** and **async polling**  
+- Focus on **robust automated testing** and well-structured code  
+- Demonstrates both **manual QA mindset** and **automation skills in Java**  
+
+---
+
+## 📂 Project Structure
+
+- `models/` → POJOs for requests and responses  
+- `utils/` → helper classes (DataGenerator, ApiPoller, ConfigManager)  
+- `tests/` → test classes (UserLifecycleTest)  
+- `pom.xml` → Maven dependencies and build configuration  
+
+---
+
+This project is a concrete example from my portfolio that demonstrates **how I design and implement robust, complete API tests**.
