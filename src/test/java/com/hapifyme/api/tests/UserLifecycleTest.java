@@ -20,27 +20,9 @@ public class UserLifecycleTest extends BaseTest {
     private String lastName;
     private String password;
 
-    @Test
-    public void userEndToEndFlow() {
+    @Test(priority = 1)
+    public void registerUserTest() {
         generateRandomUserData();
-        registerUser();
-        String confirmationToken = retrieveConfirmationToken();
-        confirmUser(confirmationToken);
-        loginUser();
-        getProfile();
-        updateProfile();
-        deleteProfile();
-        negativeCheckProfile();
-    }
-
-    private void generateRandomUserData() {
-        email = DataGenerator.randomEmail();
-        firstName = DataGenerator.randomFirstName();
-        lastName = DataGenerator.randomLastName();
-        password = DataGenerator.randomPassword();
-    }
-
-    private void registerUser() {
         RegisterRequest registerRequest = new RegisterRequest(firstName, lastName, email, password);
 
         RegisterResponse response = given()
@@ -57,25 +39,10 @@ public class UserLifecycleTest extends BaseTest {
         registeredUsername = response.getUsername();
     }
 
+    @Test(priority = 2, dependsOnMethods = "registerUserTest")
+    public void confirmUserTest() {
+        String token = retrieveConfirmationToken();
 
-    private String retrieveConfirmationToken() {
-        ApiPoller.pollForStatus("/user/retrieve_token.php", "success", apiKey, email);
-
-        String confirmationToken = given()
-                .spec(requestSpec)
-                .header("Authorization", apiKey)
-                .queryParam("username_or_email", email)
-                .get("/user/retrieve_token.php")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("confirmation_token");
-
-        return confirmationToken;
-
-    }
-
-    private void confirmUser(String token) {
         given()
                 .spec(requestSpec)
                 .queryParam("token", token)
@@ -86,7 +53,8 @@ public class UserLifecycleTest extends BaseTest {
                 .body("message", equalTo("Email confirmed successfully. You can now log in."));
     }
 
-    private void loginUser() {
+    @Test(priority = 3, dependsOnMethods = "confirmUserTest")
+    public void loginUserTest() {
         LoginRequest loginRequest = new LoginRequest(registeredUsername, password);
 
         LoginResponse response = given()
@@ -101,7 +69,8 @@ public class UserLifecycleTest extends BaseTest {
         bearerToken = response.getToken();
     }
 
-    private void getProfile() {
+    @Test(priority = 4, dependsOnMethods = "loginUserTest")
+    public void getProfileTest() {
         Response response = given()
                 .spec(requestSpec)
                 .header("Authorization", apiKey)
@@ -117,14 +86,15 @@ public class UserLifecycleTest extends BaseTest {
         assertEquals(response.path("user.last_name"), lastName);
     }
 
-    private void updateProfile() {
+    @Test(priority = 5, dependsOnMethods = "getProfileTest")
+    public void updateProfileTest() {
         String newFirstName = "UpdatedFirst";
         String newLastName = "UpdatedLast";
         String updateBody = String.format("{\"first_name\":\"%s\",\"last_name\":\"%s\"}", newFirstName, newLastName);
 
         given()
                 .spec(requestSpec)
-                .header("Authorization", apiKey) // exact cum merge în Postman
+                .header("Authorization", apiKey)
                 .body(updateBody)
                 .put("/user/update_profile.php")
                 .then()
@@ -134,7 +104,8 @@ public class UserLifecycleTest extends BaseTest {
         lastName = newLastName;
     }
 
-    private void deleteProfile() {
+    @Test(priority = 6, dependsOnMethods = "updateProfileTest")
+    public void deleteProfileTest() {
         given()
                 .spec(requestSpec)
                 .header("Authorization", "Bearer " + bearerToken)
@@ -143,7 +114,8 @@ public class UserLifecycleTest extends BaseTest {
                 .statusCode(200);
     }
 
-    private void negativeCheckProfile() {
+    @Test(priority = 7, dependsOnMethods = "deleteProfileTest")
+    public void negativeProfileCheckTest() {
         Response response = given()
                 .spec(requestSpec)
                 .header("Authorization", apiKey)
@@ -157,4 +129,28 @@ public class UserLifecycleTest extends BaseTest {
         assertEquals(response.path("message"), "User not found.");
     }
 
+
+    private void generateRandomUserData() {
+        email = DataGenerator.randomEmail();
+        firstName = DataGenerator.randomFirstName();
+        lastName = DataGenerator.randomLastName();
+        password = DataGenerator.randomPassword();
+    }
+
+    private String retrieveConfirmationToken() {
+        ApiPoller.pollForStatus("/user/retrieve_token.php", "success", apiKey, email);
+
+        String confirmationToken = given()
+                .spec(requestSpec)
+                .header("Authorization", apiKey)
+                .queryParam("username_or_email", email)
+                .get("/user/retrieve_token.php")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("confirmation_token");
+
+        return confirmationToken;
+    }
 }
+
