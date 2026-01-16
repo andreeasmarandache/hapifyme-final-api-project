@@ -24,6 +24,13 @@ jobs:
     - name: Run Tests with Maven
       run: mvn -B test --file pom.xml
 
+    - name: Run Tests with Maven
+      run: mvn -B test --file pom.xml
+      env:
+        BASE_URL: ${{ secrets.BASE_URL }}
+        ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+
+
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v4

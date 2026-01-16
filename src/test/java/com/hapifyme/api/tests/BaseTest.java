@@ -11,10 +11,11 @@ public class BaseTest {
     @BeforeClass
     public void setup() {
         requestSpec = new RequestSpecBuilder()
-                .setBaseUri(ConfigManager.get("baseUrl"))
+                .setBaseUri(ConfigManager.get("baseUrl")) // ia fie din env, fie din properties
                 .setContentType(ConfigManager.get("contentType"))
                 .addHeader("Accept", ConfigManager.get("accept"))
                 .build();
     }
+
 }
 

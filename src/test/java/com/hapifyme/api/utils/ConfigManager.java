@@ -16,7 +16,14 @@ public class ConfigManager {
     }
 
     public static String get(String key) {
+        // Mai întâi verifică dacă există variabilă de mediu
+        String envValue = System.getenv(key.toUpperCase());
+        if (envValue != null) {
+            return envValue;
+        }
+        // Altfel folosește config.properties
         return props.getProperty(key);
     }
+
 }
 
