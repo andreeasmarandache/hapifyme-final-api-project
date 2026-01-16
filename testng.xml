@@ -1,8 +1,9 @@
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="API Tests" parallel="false" thread-count="1">
-    <test name="User lifecycle">
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="API Tests" parallel="false">
+    <test name="User Lifecycle">
         <classes>
             <class name="com.hapifyme.api.tests.UserLifecycleTest"/>
         </classes>
     </test>
 </suite>
+
