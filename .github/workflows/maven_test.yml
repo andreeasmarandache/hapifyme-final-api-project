@@ -22,7 +22,7 @@ jobs:
         cache: 'maven' # Cache la dependențe pentru viteză
 
     - name: Run Tests with Maven
-      run: mvn clean test -B -Dsurefire.forkCount=1 -Dsurefire.reuseForks=false -Dsurefire.parallel=none -Dsurefire.argLine="-Xmx512m"
+      run: mvn clean test -B
       env:
         BASE_URL: ${{ secrets.BASE_URL }}
         ENVIRONMENT: ${{ vars.ENVIRONMENT }}
