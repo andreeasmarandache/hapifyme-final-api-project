@@ -6,6 +6,7 @@ import com.hapifyme.api.utils.DataGenerator;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
+import static com.hapifyme.api.tests.BaseTest.requestSpec;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.testng.Assert.assertEquals;
